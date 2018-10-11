@@ -25,3 +25,4 @@ class TestCaseTest(TestCase):
 TestCaseTest("testTemplateMethod").run()
 TestCaseTest("testResult").run()
 TestCaseTest("testFailedResultFormating").run()
+TestCaseTest("testFailedResult").run()
