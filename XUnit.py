@@ -7,8 +7,12 @@ class TestCase:
         self.setUp()
         method = getattr(self, self.name)
         method()
+        self.tearDown()
     
     def setUp(self):
+        pass
+    
+    def tearDown(self):
         pass
 
 
@@ -21,4 +25,7 @@ class WasRun(TestCase):
         self.log += "testMethod "
 
     def setUp(self):
-        self.log = "Setup "
+        self.log += "Setup "
+    
+    def tearDown(self):
+        self.log += "tearDown "
