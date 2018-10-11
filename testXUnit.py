@@ -1,6 +1,10 @@
-from XUnit import WasRun
+from XUnit import WasRun, TestCase
 
-test = WasRun("testMethod")
-print test.wasRun
-test.testMethod()
-print test.wasRun
+class TestCaseTest(TestCase):
+    def testRunning(self):
+       test = WasRun("testMethod")
+       assert (not test.wasRun)
+       test.run()
+       assert (test.wasRun)
+
+TestCaseTest("testRunning").run()
