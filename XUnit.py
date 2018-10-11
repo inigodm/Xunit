@@ -26,6 +26,9 @@ class TestResult:
     def testStarted(self):
         self.runCount += 1
 
+    def testFailed(self):
+        self.errorCount += 1
+
     def summary(self):
         return "%d run, %d failed" % (self.runCount, self.errorCount)
 
