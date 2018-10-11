@@ -1,10 +1,21 @@
 #!/bin/python
+
+class TestSuite:
+    def __init__ (self):
+        self.tests = []
+    def add(self, testCase):
+        self.tests.append(testCase)
+    
+    def run(self, result):
+        for test in self.tests:
+            test.run(result)
+        return result
+
 class TestCase:
     def __init__(self, name):
         self.name = name
         
-    def run(self):
-        result = TestResult()
+    def run(self, result):
         result.testStarted()
         try:
             self.setUp()
