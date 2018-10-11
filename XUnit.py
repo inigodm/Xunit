@@ -2,7 +2,6 @@
 class TestCase:
     def __init__(self, name):
         self.name = name
-        self.wasSetup = False
         
     def run(self):
         self.setUp()
@@ -15,12 +14,11 @@ class TestCase:
 
 class WasRun(TestCase):
     def __init__(self, name):
-        self.wasRun = False
+        self.log = ""
         TestCase.__init__(self, name)
 
     def testMethod(self):
-        self.wasRun = True
+        self.log += "testMethod "
 
     def setUp(self):
-        self.wasRun = False
-        self.wasSetup = True
+        self.log = "Setup "
