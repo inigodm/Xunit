@@ -22,4 +22,5 @@ class WasRun(TestCase):
         self.wasRun = True
 
     def setUp(self):
+        self.wasRun = False
         self.wasSetup = True
