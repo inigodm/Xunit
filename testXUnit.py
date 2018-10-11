@@ -22,7 +22,15 @@ class TestCaseTest(TestCase):
         result = test.run()
         assert (result.summary() == "1 run, 1 failed")
 
-TestCaseTest("testTemplateMethod").run()
-TestCaseTest("testResult").run()
-TestCaseTest("testFailedResultFormating").run()
-TestCaseTest("testFailedResult").run()
+    def testSuite(self):
+        suite = TestSuite()
+        suite.add(TestCaseTest("testMethod"))
+        suite.add(TestCaseTest("testMethod"))
+        suite.add(TestCaseTest("testBrokenMethod"))
+        result = suite.run()
+        assert (result.summary() == "3 run, 1 failed")
+
+print TestCaseTest("testTemplateMethod").run().summary()
+print TestCaseTest("testResult").run().summary()
+print TestCaseTest("testFailedResultFormating").run().summary()
+print TestCaseTest("testFailedResult").run().summary()
