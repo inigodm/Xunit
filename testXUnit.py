@@ -23,6 +23,7 @@ class TestCaseTest(TestCase):
         result = TestResult()
         test = WasRun("testBrokenMethod")
         result = test.run(result)
+        assert (test.log == "Setup testBrokenMethod tearDown ")
         assert (result.summary() == "1 run, 1 failed")
 
     def testSuite(self):
