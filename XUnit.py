@@ -55,6 +55,7 @@ class WasRun(TestCase):
         self.log += "testMethod "
 
     def testBrokenMethod(self):
+        self.log += "testBrokenMethod "
         raise Exception
 
     def setUp(self):
