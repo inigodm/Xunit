@@ -25,6 +25,7 @@ class TestCaseTest(TestCase):
         result = test.run(result)
         assert (test.log == "Setup testBrokenMethod tearDown ")
         assert (result.summary() == "1 run, 1 failed")
+        assert result.errorMsgs(0) = "NotImplemented"
 
     def testSuite(self):
         suite = TestSuite()
