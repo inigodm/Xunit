@@ -21,8 +21,9 @@ class TestCase:
             self.setUp()
             method = getattr(self, self.name)
             method()
-        except:
+        except Exception, e:
             result.testFailed()
+            result.addError(e)
         self.tearDown()
         return result
     
@@ -36,12 +37,25 @@ class TestResult:
     def __init__(self):
         self.runCount = 0
         self.errorCount = 0
+        self.errormessages = []
 
     def testStarted(self):
         self.runCount += 1
 
     def testFailed(self):
         self.errorCount += 1
+
+    def addError(self, msg):
+        self.errormessages += msg
+    
+    def errorMsgs(self, index = -1):
+        if (index == -1):
+            return self.errormessages
+        else:
+            if index > len(self.errormessages) - 1:
+                return "No such error"
+            else:
+                return self.errormessages[index]
 
     def summary(self):
         return "%d run, %d failed" % (self.runCount, self.errorCount)
@@ -56,7 +70,7 @@ class WasRun(TestCase):
 
     def testBrokenMethod(self):
         self.log += "testBrokenMethod "
-        raise Exception
+        raise Exception("NotImplemented")
 
     def setUp(self):
         self.log += "Setup "
