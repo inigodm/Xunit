@@ -24,7 +24,7 @@ class TestCaseTest(TestCase):
         assert result.summary() == "1 run, 1 failed"
         assert result.errorMsgs(0) == "NotImplemented"
         assert 1 == 2
-        assert result.errorMsgs(0) == "Assertion error in assert 1 == 2"
+        assert "in statement assert 1 == 2" in result.errorMsgs(0)
         
 
     def testSuite(self):
@@ -43,4 +43,5 @@ suite.add(TestCaseTest("testFailedResult"))
 suite.add(TestCaseTest("testSuite"))
 result = TestResult()
 suite.run(result)
+print result.errorMsgs()
 print result.summary()

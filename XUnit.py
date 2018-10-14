@@ -1,5 +1,6 @@
 #!/bin/python
 import sys
+import traceback
 class TestSuite:
     def __init__ (self):
         self.tests = []
@@ -21,8 +22,13 @@ class TestCase:
             self.setUp()
             method = getattr(self, self.name)
             method()
+        except AssertionError:
+            _, _, tb = sys.exc_info()
+            tb_info = traceback.extract_tb(tb)
+            filename, line, func, text = tb_info[-1]
+            result.addError('An assertion error occurred on line {} in statement {}'.format(line, text))
         except Exception, e:
-            result.addError(e)
+            result.addError(e.args[0])
         self.tearDown()
         return result
     
@@ -41,7 +47,7 @@ class TestResult:
         self.runCount += 1
 
     def addError(self, msg):
-        self.errormessages += msg
+        self.errormessages.append(msg)
     
     def errorCount(self):
         return len(self.errormessages)
