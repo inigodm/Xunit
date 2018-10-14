@@ -1,5 +1,5 @@
 #!/bin/python
-
+import sys
 class TestSuite:
     def __init__ (self):
         self.tests = []
@@ -22,7 +22,6 @@ class TestCase:
             method = getattr(self, self.name)
             method()
         except Exception, e:
-            result.testFailed()
             result.addError(e)
         self.tearDown()
         return result
@@ -36,18 +35,17 @@ class TestCase:
 class TestResult:
     def __init__(self):
         self.runCount = 0
-        self.errorCount = 0
         self.errormessages = []
 
     def testStarted(self):
         self.runCount += 1
 
-    def testFailed(self):
-        self.errorCount += 1
-
     def addError(self, msg):
         self.errormessages += msg
     
+    def errorCount(self):
+        return len(self.errormessages)
+
     def errorMsgs(self, index = -1):
         if (index == -1):
             return self.errormessages
@@ -58,7 +56,7 @@ class TestResult:
                 return self.errormessages[index]
 
     def summary(self):
-        return "%d run, %d failed" % (self.runCount, self.errorCount)
+        return "%d run, %d failed" % (self.runCount, self.errorCount())
 
 class WasRun(TestCase):
     def __init__(self, name):

@@ -12,19 +12,16 @@ class TestCaseTest(TestCase):
         test = WasRun("testMethod")
         result = test.run(result)
         assert (result.summary() == "1 run, 0 failed")
-    
-    def testFailedResultFormating(self):
-        result = TestResult()
-        result.testStarted()
-        result.testFailed()
-        assert (result.summary() == "1 run, 1 failed")
+        assert result.errorMsgs() == []
+        assert result.errorMsgs(0) == "No such error"
 
+    
     def testFailedResult(self):
         result = TestResult()
         test = WasRun("testBrokenMethod")
         result = test.run(result)
-        assert (test.log == "Setup testBrokenMethod tearDown ")
-        assert (result.summary() == "1 run, 1 failed")
+        assert test.log == "Setup testBrokenMethod tearDown "
+        assert result.summary() == "1 run, 1 failed"
         assert result.errorMsgs(0) == "NotImplemented"
 
     def testSuite(self):
@@ -39,7 +36,6 @@ class TestCaseTest(TestCase):
 suite = TestSuite()
 suite.add(TestCaseTest("testTemplateMethod"))
 suite.add(TestCaseTest("testResult"))
-suite.add(TestCaseTest("testFailedResultFormating"))
 suite.add(TestCaseTest("testFailedResult"))
 suite.add(TestCaseTest("testSuite"))
 result = TestResult()
