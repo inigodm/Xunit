@@ -1,6 +1,8 @@
 #!/bin/python
 import sys
 import traceback
+import inspect
+
 class TestSuite:
     def __init__ (self):
         self.tests = []
@@ -12,6 +14,20 @@ class TestSuite:
             test.run(result)
         return result
 
+def build_assertion_error_msg():
+    frame, filename, line_num, func, source_code, source_index = inspect.trace()[-1]
+    code = source_code[source_index].strip().replace('assert ', '')        
+    res = ""
+    if '==' in code:
+        tokens = code.split('==')
+        for tok in tokens:
+            if tok.strip() in inspect.getargvalues(frame).locals:
+                res += "\n {} = {}".format(tok.strip(), inspect.getargvalues(frame).locals[tok.strip()])
+            else:
+                res += "\n {} = {}".format(tok.strip(), tok.strip())
+            print tokens[0].strip() in inspect.getargvalues(frame).locals
+    return 'An assertion error occurred on file {} on line {} while asserting {} {}'.format(filename, line_num, code, res)        
+    
 class TestCase:
     def __init__(self, name):
         self.name = name
@@ -23,10 +39,7 @@ class TestCase:
             method = getattr(self, self.name)
             method()
         except AssertionError:
-            _, _, tb = sys.exc_info()
-            tb_info = traceback.extract_tb(tb)
-            filename, line, func, text = tb_info[-1]
-            result.addError('An assertion error occurred on line {} in statement {}'.format(line, text))
+            result.addError(build_assertion_error_msg())
         except Exception, e:
             result.addError(e.args[0])
         self.tearDown()
