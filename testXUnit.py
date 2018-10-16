@@ -24,11 +24,19 @@ class TestCaseTest(TestCase):
         assert test.log == "Setup testBrokenMethod tearDown "
         assert result.summary() == "1 run, 1 failed"
         assert result.errorMsgs(0) == "NotImplemented"
-        #assert 1 == r 
+        assert 1 == r 
         
     def testErrors2(self):
         au = aux(1, 2)
-        assert 2 == au.a
+        assert 2 == au.c()
+
+    def testErrors3(self):
+        au = aux(1, 2)
+        assert 3 == au.b
+
+    def testErrors4(self):
+        au = aux(1, 2)
+        assert 3 == au.d("lala")
 
     def testSuite(self):
         suite = TestSuite()
@@ -43,6 +51,10 @@ class aux:
     def __init__(self, a , b):
         self.a = a
         self.b = b
+    def c(self):
+        return "dedo"
+    def d(self, dede):
+        return "d es " + dede
 
 suite = TestSuite()
 suite.add(TestCaseTest("testTemplateMethod"))
@@ -50,9 +62,11 @@ suite.add(TestCaseTest("testResult"))
 suite.add(TestCaseTest("testFailedResult"))
 suite.add(TestCaseTest("testSuite"))
 suite.add(TestCaseTest("testErrors2"))
+suite.add(TestCaseTest("testErrors3"))
 result = TestResult()
 suite.run(result)
 print result.errorMsgs(0)
 print result.errorMsgs(1)
+print result.errorMsgs(2)
 #assert " while asserting 1 == r" in result.errorMsgs(0)
 print result.summary()

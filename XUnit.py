@@ -19,37 +19,50 @@ def build_assertion_error_msg():
     code = source_code[source_index].strip().replace('assert ', '')        
     if '==' in code:
         res = obtain_token_values_from_frame(code.split('=='), frame)
-        #print tokens[0].strip() in inspect.getargvalues(frame).locals
     return 'An assertion error occurred on file {} on line {} while asserting {} {}'.format(filename, line_num, code, res)        
 
 def obtain_token_values_from_frame(tokens, frame):
     res = ""
-    for tok in tokens:
-        stripped = tok.strip()
+    for token in tokens:
+        stripped = token.strip()
         if stripped in inspect.getargvalues(frame).locals:
-            res += build_log_for_field(tok, frame)
+            res += build_log_for_field(stripped, frame)
         elif stripped.split(".")[0] in inspect.getargvalues(frame).locals:
-            res += build_log_for_obj_method(tok, frame)
+            res += build_log_for_method_or_field(stripped, frame)
         else:
-            res += build_log_for_constant(tok, frame)
+            res += build_log_for_constant(stripped, frame)
     return res
 
-def build_log_for_obj_method(tok, frame):
+def build_log_for_method_or_field(tok, frame):
+    if "(" in tok:
+        return build_log_for_method(tok, frame)
+    else:
+        return build_log_for_field(tok, frame)
+
+def build_log_for_method(tok, frame):
+    return format(tok, obtain_method_or_field(tok[:-2], frame)())
+
+def build_log_for_field(tok, frame):
+    return format(tok, obtain_method_or_field(tok, frame))
+
+def obtain_method_or_field(tok, frame):
     toks = tok.split('.')
     obj = None
-    print tok
     for t in toks:
         if (obj == None):
             obj = inspect.getargvalues(frame).locals[t.strip()]
         else:
             obj = getattr(obj, t)
-    return "\n{} = {}".format(tok, obj)
-    
-def build_log_for_field(tok, frame):
-    return "\n{} = {}".format(tok.strip(), inspect.getargvalues(frame).locals[tok.strip()])
+    return obj
+
 
 def build_log_for_constant(tok, frame):
-    return "\n{} = {}".format(tok.strip(), tok.strip())
+    return format(tok, tok.strip())
+
+def format_to_console(code, value):
+    return "\n{} = {}".format(code, value)
+
+format = format_to_console
 
 class TestCase:
     def __init__(self, name):
