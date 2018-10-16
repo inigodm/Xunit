@@ -17,17 +17,40 @@ class TestSuite:
 def build_assertion_error_msg():
     frame, filename, line_num, func, source_code, source_index = inspect.trace()[-1]
     code = source_code[source_index].strip().replace('assert ', '')        
-    res = ""
     if '==' in code:
-        tokens = code.split('==')
-        for tok in tokens:
-            if tok.strip() in inspect.getargvalues(frame).locals:
-                res += "\n {} = {}".format(tok.strip(), inspect.getargvalues(frame).locals[tok.strip()])
-            else:
-                res += "\n {} = {}".format(tok.strip(), tok.strip())
-            print tokens[0].strip() in inspect.getargvalues(frame).locals
+        res = obtain_token_values_from_frame(code.split('=='), frame)
+        #print tokens[0].strip() in inspect.getargvalues(frame).locals
     return 'An assertion error occurred on file {} on line {} while asserting {} {}'.format(filename, line_num, code, res)        
+
+def obtain_token_values_from_frame(tokens, frame):
+    res = ""
+    for tok in tokens:
+        stripped = tok.strip()
+        if stripped in inspect.getargvalues(frame).locals:
+            res += build_log_for_field(tok, frame)
+        elif stripped.split(".")[0] in inspect.getargvalues(frame).locals:
+            res += build_log_for_obj_method(tok, frame)
+        else:
+            res += build_log_for_constant(tok, frame)
+    return res
+
+def build_log_for_obj_method(tok, frame):
+    toks = tok.split('.')
+    obj = None
+    print tok
+    for t in toks:
+        if (obj == None):
+            obj = inspect.getargvalues(frame).locals[t.strip()]
+        else:
+            obj = getattr(obj, t)
+    return "\n{} = {}".format(tok, obj)
     
+def build_log_for_field(tok, frame):
+    return "\n{} = {}".format(tok.strip(), inspect.getargvalues(frame).locals[tok.strip()])
+
+def build_log_for_constant(tok, frame):
+    return "\n{} = {}".format(tok.strip(), tok.strip())
+
 class TestCase:
     def __init__(self, name):
         self.name = name

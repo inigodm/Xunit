@@ -24,7 +24,7 @@ class TestCaseTest(TestCase):
         assert test.log == "Setup testBrokenMethod tearDown "
         assert result.summary() == "1 run, 1 failed"
         assert result.errorMsgs(0) == "NotImplemented"
-        assert 1 == r 
+        #assert 1 == r 
         
     def testErrors2(self):
         au = aux(1, 2)
@@ -54,5 +54,5 @@ result = TestResult()
 suite.run(result)
 print result.errorMsgs(0)
 print result.errorMsgs(1)
-assert " while asserting 1 == r" in result.errorMsgs(0)
+#assert " while asserting 1 == r" in result.errorMsgs(0)
 print result.summary()
