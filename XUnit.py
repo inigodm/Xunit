@@ -45,8 +45,8 @@ def build_log_for_method(tok, frame):
 def build_log_for_field(tok, frame):
     return format(tok, obtain_method_or_field(tok, frame))
 
-def obtain_method_or_field(tok, frame):
-    toks = tok.split('.')
+def obtain_method_or_field(name, frame):
+    toks = name.split('.')
     obj = None
     for t in toks:
         if (obj == None):
@@ -56,8 +56,8 @@ def obtain_method_or_field(tok, frame):
     return obj
 
 
-def build_log_for_constant(tok, frame):
-    return format(tok, tok.strip())
+def build_log_for_constant(value, frame):
+    return format(value, value)
 
 def format_to_console(code, value):
     return "\n{} = {}".format(code, value)
