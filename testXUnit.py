@@ -25,8 +25,10 @@ class TestCaseTest(TestCase):
         assert result.summary() == "1 run, 1 failed"
         assert result.errorMsgs(0) == "NotImplemented"
         assert 1 == r 
-        assert "1 == r" in result.errorMsgs(0)
         
+    def testErrors2(self):
+        au = aux(1, 2)
+        assert 2 == au.a
 
     def testSuite(self):
         suite = TestSuite()
@@ -37,12 +39,20 @@ class TestCaseTest(TestCase):
         suite.run(result)
         assert (result.summary() == "3 run, 1 failed")
 
+class aux:
+    def __init__(self, a , b):
+        self.a = a
+        self.b = b
+
 suite = TestSuite()
 suite.add(TestCaseTest("testTemplateMethod"))
 suite.add(TestCaseTest("testResult"))
 suite.add(TestCaseTest("testFailedResult"))
 suite.add(TestCaseTest("testSuite"))
+suite.add(TestCaseTest("testErrors2"))
 result = TestResult()
 suite.run(result)
 print result.errorMsgs(0)
+print result.errorMsgs(1)
+assert " while asserting 1 == r" in result.errorMsgs(0)
 print result.summary()
