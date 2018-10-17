@@ -32,13 +32,17 @@ def build_assertion_error_msg():
     return 'An assertion error occurred on file {} on line {} while asserting {} {}'.format(filename, line_num, code, res)        
 
 def obtain_token_values_from_frame(tokens, frame):
-    res = ""
+    return "".join([format(name, value) for name, value in calc_value_for_token(tokens, frame)])
+    
+def calc_value_for_token(tokens, frame):
+    res = []
     for token in tokens:
         stripped = token.strip()
         try:
-            res += format(stripped, calc_method_or_field_value(stripped, frame))
-        except:
-            res += format("const", stripped)
+            res.append((stripped, calc_method_or_field_value(stripped, frame)))
+        except Exception, e:
+            #traceback.print_exc()
+            res.append(("const", stripped))
     return res
 
 def calc_method_or_field_value(tok, frame):
@@ -48,7 +52,18 @@ def calc_method_or_field_value(tok, frame):
         return calc_field_value(tok, frame)
 
 def calc_method_value(tok, frame):
-    return obtain_method_or_field(tok[:-2], frame)()
+    method = obtain_method_or_field(tok[:tok.rfind('(')], frame)
+    argsDict = calc_arguments(tok, frame, method)
+    return method(**argsDict)
+
+def calc_arguments(tok, frame, method):
+    res = {}
+    for param_name, param_value in zip(inspect.getargspec(method)[0][1:], calc_value_for_token(get_args(tok), frame)[0][1:]):
+        res[param_name] = param_value
+    return res
+
+def get_args(tok):
+    return [s.strip() for s in tok[tok.find('(') + 1:tok.find(')')].split(",")]
 
 def calc_field_value(tok, frame):
     return obtain_method_or_field(tok, frame)

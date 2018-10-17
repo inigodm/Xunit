@@ -33,9 +33,9 @@ class TestCaseTest(TestCase):
         au = aux(1, 2)
         assert 3 == au.b
 
-    #def testErrors4(self):
-    #    au = aux(1, 2)
-    #    assert 3 == au.d("lala")
+    def testErrors4(self):
+        au = aux(1, 2)
+        assert 3 == au.d("lala")
 
     def testSuite(self):
         suite = TestSuite()
