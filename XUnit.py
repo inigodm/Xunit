@@ -35,25 +35,23 @@ def obtain_token_values_from_frame(tokens, frame):
     res = ""
     for token in tokens:
         stripped = token.strip()
-        if stripped in inspect.getargvalues(frame).locals:
-            res += build_log_for_field(stripped, frame)
-        elif stripped.split(".")[0] in inspect.getargvalues(frame).locals:
-            res += build_log_for_method_or_field(stripped, frame)
-        else:
-            res += build_log_for_constant(stripped, frame)
+        try:
+            res += format(stripped, calc_method_or_field_value(stripped, frame))
+        except:
+            res += format("const", stripped)
     return res
 
-def build_log_for_method_or_field(tok, frame):
-    if "(" in tok:
-        return build_log_for_method(tok, frame)
+def calc_method_or_field_value(tok, frame):
+    if tok.endswith(")"):
+        return calc_method_value(tok, frame)
     else:
-        return build_log_for_field(tok, frame)
+        return calc_field_value(tok, frame)
 
-def build_log_for_method(tok, frame):
-    return format(tok, obtain_method_or_field(tok[:-2], frame)())
+def calc_method_value(tok, frame):
+    return obtain_method_or_field(tok[:-2], frame)()
 
-def build_log_for_field(tok, frame):
-    return format(tok, obtain_method_or_field(tok, frame))
+def calc_field_value(tok, frame):
+    return obtain_method_or_field(tok, frame)
 
 def obtain_method_or_field(name, frame):
     toks = name.split('.')
@@ -64,10 +62,6 @@ def obtain_method_or_field(name, frame):
         else:
             obj = getattr(obj, t)
     return obj
-
-
-def build_log_for_constant(value, frame):
-    return format(value, value)
 
 def format_to_console(code, value):
     return "\n{} = {}".format(code, value)
