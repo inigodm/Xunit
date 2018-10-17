@@ -15,7 +15,6 @@ class TestCaseTest(TestCase):
         assert result.errorMsgs() == []
         assert result.errorMsgs(0) == "No such error"
 
-    
     def testFailedResult(self):
         result = TestResult()
         test = WasRun("testBrokenMethod")
@@ -57,13 +56,6 @@ class aux:
         return "d es " + dede
 
 suite = TestSuite()
-#suite.add(TestCaseTest("testTemplateMethod"))
-#suite.add(TestCaseTest("testResult"))
-#suite.add(TestCaseTest("testFailedResult"))
-#suite.add(TestCaseTest("testSuite"))
-#suite.add(TestCaseTest("testErrors2"))
-#suite.add(TestCaseTest("testErrors3"))
-#suite.add(TestCaseTest("testErrors4"))
 suite.addAll(TestCaseTest)
 result = TestResult()
 suite.run(result)
