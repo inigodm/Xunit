@@ -6,6 +6,12 @@ import inspect
 class TestSuite:
     def __init__ (self):
         self.tests = []
+
+    def addAll(self, clazz):
+        members = inspect.getmembers(clazz, predicate=inspect.ismethod)
+        for member in members:
+            self.__addTests__(clazz, member)
+
     def add(self, testCase):
         self.tests.append(testCase)
     
@@ -13,9 +19,13 @@ class TestSuite:
         for test in self.tests:
             test.run(result)
         return result
+    
+    def __addTests__(self, clazz, member):
+        if member[0].startswith('test'):
+            self.add(clazz(member[0]))
 
 def build_assertion_error_msg():
-    frame, filename, line_num, func, source_code, source_index = inspect.trace()[-1]
+    frame, filename, line_num, _, source_code, source_index = inspect.trace()[-1]
     code = source_code[source_index].strip().replace('assert ', '')        
     if '==' in code:
         res = obtain_token_values_from_frame(code.split('=='), frame)
